@@ -76,6 +76,7 @@ def run(
     top_n: int = DEFAULT_TOP_N,
     skip: Sequence[str] = (),
     github_for: int = 0,
+    fide_index: dict | None = None,
 ) -> RunResult:
     unknown = [s for s in skip if s not in SKIPPABLE_STAGES]
     if unknown:
@@ -106,7 +107,7 @@ def run(
         # yield people, otherwise every downstream stage has nothing to chew on.
         if active("resolve"):
             persons = resolve_stage.resolve(
-                result.raw_profiles, github_for=github_for
+                result.raw_profiles, github_for=github_for, fide_index=fide_index
             )
         else:
             persons = resolve_stage.passthrough(result.raw_profiles)
@@ -169,12 +170,36 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         parser.add_argument(
             f"--skip-{stage}", action="store_true", help=f"skip the {stage} stage"
         )
+    parser.add_argument(
+        "--no-fide-join",
+        dest="fide_join",
+        action="store_false",
+        help="skip the FIDE join (which downloads the ~14MB monthly rating "
+        "list once) -- titled players then get no verified birth year",
+    )
+    parser.set_defaults(fide_join=True)
     return parser.parse_args(argv)
+
+
+def load_fide_index() -> dict | None:
+    """The (title, name) join table. Network + a few seconds, so it's opt-out."""
+    from adapters import fide
+
+    try:
+        index = fide.load_index()
+    except Exception as exc:  # noqa: BLE001 - the join is optional
+        print(f"  ! FIDE join unavailable: {exc}", file=sys.stderr)
+        return None
+    print(f"  + FIDE join index: {len(index)} titled players")
+    return index
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     skip = [s for s in SKIPPABLE_STAGES if getattr(args, f"skip_{s}")]
+    fide_index = (
+        load_fide_index() if args.fide_join and "resolve" not in skip else None
+    )
     run(
         adapters=discover_adapters(),
         db_path=args.db,
@@ -182,6 +207,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         top_n=args.top,
         skip=skip,
         github_for=args.github_for,
+        fide_index=fide_index,
     )
     return 0
 

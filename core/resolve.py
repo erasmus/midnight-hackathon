@@ -24,6 +24,13 @@ import os
 import re
 from dataclasses import dataclass, field
 
+from core.fide_join import (
+    build_buckets,
+    fide_profile_url,
+    find_match,
+    near_miss,
+    profile_title,
+)
 from core.github_match import check_handle_reuse
 from core.links import GITHUB, extract_links
 from core.schema import Person, RawProfile
@@ -36,9 +43,6 @@ PLATFORM_PROFILE_PATTERNS: dict[str, re.Pattern] = {
     "kaggle": re.compile(r"^kaggle\.com/([^/?#]+)", re.I),
     "metaculus": re.compile(r"^metaculus\.com/accounts/profile/([^/?#]+)", re.I),
 }
-
-# Mechanism 3 lands with #21 (FIDE adapter #15 must exist first).
-FIDE_JOIN = None
 
 # GitHub is 60 requests/hour unauthenticated, so only the sharp end is checked.
 DEFAULT_GITHUB_FOR = 50
@@ -65,6 +69,7 @@ class _Node:
     links: dict[str, str] = field(default_factory=dict)
     evidence: list[str] = field(default_factory=list)
     weak: list[str] = field(default_factory=list)
+    birth_year: int | None = None
 
 
 def _real_name_score(name: str | None, handle: str) -> int:
@@ -98,6 +103,7 @@ def resolve(
     profiles: list[RawProfile],
     github_client=None,
     github_for: int | None = None,
+    fide_index: dict | None = None,
 ) -> list[Person]:
     """Merge profiles into people via the sanctioned mechanisms only."""
     github_for = DEFAULT_GITHUB_FOR if github_for is None else github_for
@@ -168,8 +174,33 @@ def resolve(
                 by_github[login] = key
 
     # -- mechanism 3: FIDE join (#21) -------------------------------------
-    if FIDE_JOIN is not None:  # pragma: no cover - lands with #21
-        FIDE_JOIN(nodes, _union)
+    if fide_index:
+        buckets = build_buckets(fide_index)
+        by_fideid = {
+            n.profile.handle: k
+            for k, n in nodes.items()
+            if n.profile.platform == "fide"
+        }
+        for key in sorted(nodes):
+            node = nodes[key]
+            if node.profile.platform == "fide":
+                continue
+            title = profile_title(node.profile)
+            match = find_match(title, node.profile.display_name, buckets)
+            if match is None:
+                miss = near_miss(title, node.profile.display_name, buckets)
+                if miss:
+                    node.weak.append(miss)
+                continue
+
+            # The whole point of the join: a verified birth year.
+            node.birth_year = match.record["birth_year"]
+            node.links.setdefault("fide", fide_profile_url(match.record))
+            node.evidence.append(match.evidence)
+
+            fide_key = by_fideid.get(str(match.record["fideid"]))
+            if fide_key and fide_key != key:
+                _union(key, fide_key, f"merged: {match.evidence}")
 
     # -- build people ------------------------------------------------------
     components: dict[str, list[str]] = {}
@@ -203,7 +234,8 @@ def resolve(
                 id=members[0],
                 display_name=best.profile.display_name or best.profile.handle,
                 birth_year=next(
-                    (n.profile.birth_year for n in member_nodes if n.profile.birth_year), None
+                    (n.profile.birth_year for n in member_nodes if n.profile.birth_year),
+                    next((n.birth_year for n in member_nodes if n.birth_year), None),
                 ),
                 country=next(
                     (n.profile.country for n in member_nodes if n.profile.country), None

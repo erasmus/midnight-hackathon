@@ -307,3 +307,25 @@ def test_a_url_in_both_bio_and_links_is_credited_to_the_links_field():
     ]
     profiles = {p.handle: p for p in fetch(client_for(BASIC_TOPS, users))}
     assert profiles["Alice"].raw["link_sources"] == {"https://github.com/alice": "links field"}
+
+
+def test_the_published_real_name_is_used_as_the_display_name():
+    # Lichess publishes this as profile.realName -- not firstName/lastName.
+    users = [full_user("Alice", realName="Alice Adams"), full_user("Bob"), full_user("Carol")]
+    profiles = {p.handle: p for p in fetch(client_for(BASIC_TOPS, users))}
+    assert profiles["Alice"].display_name == "Alice Adams"
+
+
+def test_real_name_wins_over_split_name_fields():
+    users = [
+        full_user("Alice", realName="Alice Adams", firstName="A", lastName="Adams"),
+        full_user("Bob"), full_user("Carol"),
+    ]
+    profiles = {p.handle: p for p in fetch(client_for(BASIC_TOPS, users))}
+    assert profiles["Alice"].display_name == "Alice Adams"
+
+
+def test_a_blank_real_name_falls_back_to_the_username():
+    users = [full_user("Alice", realName="   "), full_user("Bob"), full_user("Carol")]
+    profiles = {p.handle: p for p in fetch(client_for(BASIC_TOPS, users))}
+    assert profiles["Alice"].display_name == "Alice"

@@ -81,6 +81,38 @@ class HttpClient:
         text = self._request("POST", url, data=data, accept=NDJSON)
         return [json.loads(line) for line in text.splitlines() if line.strip()]
 
+    def download(self, url: str, dest: str | Path, refresh: bool = False) -> Path:
+        """Stream a large file to disk, once.
+
+        Bulk files (the FIDE rating list is ~14MB zipped) don't belong in the
+        text cache, and we must never re-download one we already have. Written
+        to a temp file first so a failure can't leave a half-file that looks
+        cached on the next run.
+        """
+        dest = Path(dest)
+        if dest.exists() and not refresh:
+            return dest
+        dest.parent.mkdir(parents=True, exist_ok=True)
+
+        self._respect_rate_limit(urlparse(url).netloc)
+        response = self.session.get(url, timeout=self.timeout, stream=True)
+        if response.status_code >= 400:
+            raise HttpError(f"GET {url} failed with HTTP {response.status_code}")
+
+        partial = dest.with_suffix(dest.suffix + ".part")
+        try:
+            with open(partial, "wb") as handle:
+                for chunk in response.iter_content(chunk_size=1 << 16):
+                    if chunk:
+                        handle.write(chunk)
+            partial.replace(dest)
+        finally:
+            partial.unlink(missing_ok=True)
+            close = getattr(response, "close", None)
+            if close:
+                close()
+        return dest
+
     # -- internals ------------------------------------------------------
 
     def _request(
@@ -116,14 +148,19 @@ class HttpClient:
         return self.session.get(url, timeout=self.timeout)
 
     def _respect_rate_limit(self, host: str) -> None:
-        now = self._clock()
+        """Ensure >= min_interval since the last request to this host.
+
+        The recorded timestamp must be the clock reading *after* sleeping, not
+        that reading plus the sleep again -- double-counting it makes each
+        request wait one interval longer than the last, so the delay grows
+        without bound (50 requests took ~21 minutes instead of ~50 seconds).
+        """
         last = self._last_request_at.get(host)
         if last is not None:
-            wait = self.min_interval - (now - last)
+            wait = self.min_interval - (self._clock() - last)
             if wait > 0:
                 self._sleep(wait)
-                now = self._clock() + wait
-        self._last_request_at[host] = now
+        self._last_request_at[host] = self._clock()
 
     def _cache_key(self, method: str, url: str, data: Any = None) -> str:
         body = "" if data is None else str(data)

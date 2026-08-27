@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 import pipeline
-from core.schema import Person, RawProfile
+from core.schema import Person, RawProfile  # noqa: F401
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -108,7 +108,7 @@ def test_stages_receive_and_return_persons(tmp_path):
 def test_running_the_script_writes_an_empty_database(tmp_path):
     proc = subprocess.run(
         [sys.executable, "pipeline.py", "--db", str(tmp_path / "db.sqlite"),
-         "--out", str(tmp_path / "out"), "--skip-fetch"],
+         "--out", str(tmp_path / "out"), "--skip-fetch", "--no-fide-join"],
         cwd=REPO_ROOT, capture_output=True, text=True,
     )
     assert proc.returncode == 0, proc.stderr
@@ -118,7 +118,8 @@ def test_running_the_script_writes_an_empty_database(tmp_path):
 def test_the_script_accepts_a_skip_flag(tmp_path):
     proc = subprocess.run(
         [sys.executable, "pipeline.py", "--db", str(tmp_path / "db.sqlite"),
-         "--out", str(tmp_path / "out"), "--skip-fetch", "--skip-enrich"],
+         "--out", str(tmp_path / "out"), "--skip-fetch", "--skip-enrich",
+         "--no-fide-join"],
         cwd=REPO_ROOT, capture_output=True, text=True,
     )
     assert proc.returncode == 0, proc.stderr
@@ -168,3 +169,34 @@ def test_github_matching_is_off_by_default_in_the_cli(tmp_path):
 def test_github_matching_can_be_enabled_from_the_cli(tmp_path):
     args = pipeline.parse_args(["--github-for", "25"])
     assert args.github_for == 25
+
+
+def test_the_fide_join_is_on_by_default_in_the_cli():
+    assert pipeline.parse_args([]).fide_join is True
+
+
+def test_the_fide_join_can_be_turned_off():
+    assert pipeline.parse_args(["--no-fide-join"]).fide_join is False
+
+
+def test_a_fide_index_passed_to_run_unlocks_birth_years(tmp_path):
+    titled = RawProfile(platform="lichess", handle="DrNykterstein",
+                        display_name="Magnus Carlsen", raw={"title": "GM"})
+
+    class One:
+        name = "one"
+
+        def fetch_top(self, n):
+            return [titled]
+
+    index = {("GM", "magnus carlsen"): {
+        "fideid": "1503014", "name": "Magnus Carlsen", "fide_name": "Carlsen, Magnus",
+        "title": "GM", "country": "NOR", "rating": 2839, "birth_year": 1990,
+        "ambiguous": False}}
+    result = run(tmp_path, adapters=[One()], fide_index=index)
+    assert result.persons[0].birth_year == 1990
+
+
+def test_run_does_no_fide_lookup_without_an_index(tmp_path):
+    result = run(tmp_path, adapters=[FakeAdapter()])
+    assert result.persons[0].birth_year is None

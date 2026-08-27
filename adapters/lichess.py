@@ -99,10 +99,20 @@ def _links(profile: dict) -> tuple[list[str], dict[str, str]]:
 
 
 def _display_name(handle: str, profile: dict) -> str:
-    full = " ".join(
+    """The name the player published, if any.
+
+    Lichess exposes this as `profile.realName`; the split firstName/lastName
+    fields are legacy and absent from current responses. Reading only the
+    legacy fields silently drops every real name -- which in turn makes the
+    FIDE join (#21) match nothing at all, since that join is name-based.
+    """
+    real = (profile.get("realName") or "").strip()
+    if real:
+        return real
+    legacy = " ".join(
         p for p in (profile.get("firstName"), profile.get("lastName")) if p
     ).strip()
-    return full or handle
+    return legacy or handle
 
 
 def _rating_history(client, handle: str) -> list[dict]:
