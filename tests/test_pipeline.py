@@ -25,6 +25,7 @@ class FakeAdapter:
 
 
 def run(tmp_path, adapters, **kwargs):
+    kwargs.setdefault("github_for", 0)
     return pipeline.run(
         adapters=adapters, db_path=tmp_path / "db.sqlite", out_dir=tmp_path / "out", **kwargs
     )
@@ -32,7 +33,7 @@ def run(tmp_path, adapters, **kwargs):
 
 def test_pipeline_runs_end_to_end_and_creates_the_database(tmp_path):
     db_path = tmp_path / "db.sqlite"
-    pipeline.run(adapters=[], db_path=db_path, out_dir=tmp_path / "out")
+    pipeline.run(adapters=[], db_path=db_path, out_dir=tmp_path / "out", github_for=0)
     assert db_path.exists()
 
 
@@ -139,3 +140,31 @@ def test_skipping_fetch_still_processes_already_persisted_profiles(tmp_path):
 
 def test_fetch_is_a_skippable_stage(tmp_path):
     assert "fetch" in pipeline.SKIPPABLE_STAGES
+
+
+def test_skipping_resolve_does_not_merge_profiles(tmp_path):
+    linked = RawProfile(platform="codeforces", handle="tourist",
+                        profile_links=["https://lichess.org/@/Alice"])
+    other = RawProfile(platform="lichess", handle="Alice")
+
+    class Two:
+        name = "two"
+
+        def fetch_top(self, n):
+            return [linked, other]
+
+    merged = run(tmp_path, adapters=[Two()])
+    assert len(merged.persons) == 1, "self-link should merge when resolve runs"
+
+    unmerged = run(tmp_path, adapters=[Two()], skip=["resolve"])
+    assert len(unmerged.persons) == 2
+
+
+def test_github_matching_is_off_by_default_in_the_cli(tmp_path):
+    args = pipeline.parse_args([])
+    assert args.github_for == 0
+
+
+def test_github_matching_can_be_enabled_from_the_cli(tmp_path):
+    args = pipeline.parse_args(["--github-for", "25"])
+    assert args.github_for == 25

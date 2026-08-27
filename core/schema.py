@@ -72,6 +72,10 @@ class Person:
     # Human-readable justification for every resolved link. Required: a link we
     # cannot explain is a link we must not show a judge.
     evidence: list[str] = field(default_factory=list)
+    # Collisions we declined to link (uncorroborated handle reuse). Kept so we
+    # can say honestly how many we refused; never surfaced in outputs, and
+    # deliberately NOT evidence -- these are the links we chose not to make.
+    weak_matches: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if self.links and not self.evidence:
