@@ -26,6 +26,9 @@ MIN_AGE = 18
 # routinely teenagers, so an unknown age must be resolved, not assumed.
 YOUNG_SKEWING_PLATFORMS = frozenset({"lichess", "chesscom", "fide", "codeforces"})
 
+# Composite weights (#30), exactly as specified.
+DEFAULT_WEIGHTS = {"outlierness": 0.45, "trajectory": 0.30, "addressability": 0.25}
+
 # Addressability weights (#29), exactly as specified.
 ADDRESSABILITY_WEIGHTS = {
     "github": 40,   # only with verified activity -- see `_github_is_active`
@@ -38,11 +41,34 @@ ADDRESSABILITY_WEIGHTS = {
 PROFESSIONAL_SURFACES = frozenset(ADDRESSABILITY_WEIGHTS)
 
 
+@dataclass(frozen=True)
+class ScoringConfig:
+    """Everything the GUI can turn. Defaults are the specified values.
+
+    The pipeline uses the defaults, the explorer passes an override -- so both
+    drive the *same* scoring code. A GUI that reimplemented scoring would be a
+    demo of the GUI, not of the pipeline.
+    """
+
+    weights: dict = None
+    min_age: int = MIN_AGE
+    strict_young_platform: bool = True
+    require_surface: bool = True
+
+    def __post_init__(self) -> None:
+        if self.weights is None:
+            object.__setattr__(self, "weights", dict(DEFAULT_WEIGHTS))
+
+
 @dataclass
 class FilterResult:
     excluded: bool = False
     reasons: list[str] = field(default_factory=list)
     flags: list[str] = field(default_factory=list)
+
+
+DEFAULT_CONFIG = ScoringConfig()
+WEIGHTS = DEFAULT_WEIGHTS  # backwards-compatible alias
 
 
 def _platforms(person: Person) -> set[str]:
@@ -83,17 +109,18 @@ def _age(person: Person) -> int | None:
     return CURRENT_YEAR - person.birth_year
 
 
-def hard_filter(person: Person) -> FilterResult:
+def hard_filter(person: Person, config: "ScoringConfig" = None) -> FilterResult:
     """Run every gate. Collect *all* failures, not just the first (#26)."""
+    config = config or DEFAULT_CONFIG
     result = FilterResult()
 
     # (a) age floor.
     age = _age(person)
     if age is not None:
-        if age < MIN_AGE:
+        if age < config.min_age:
             result.excluded = True
             result.reasons.append(
-                f"under {MIN_AGE}: born {person.birth_year}, age ~{age}"
+                f"under {config.min_age}: born {person.birth_year}, age ~{age}"
             )
     else:
         result.flags.append("age_unknown")
@@ -101,7 +128,7 @@ def hard_filter(person: Person) -> FilterResult:
             (person.enrichment or {}).get("adulthood_evidence")
         )
         young_platform = _platforms(person) & YOUNG_SKEWING_PLATFORMS
-        if young_platform and not has_adulthood_evidence:
+        if young_platform and not has_adulthood_evidence and config.strict_young_platform:
             result.excluded = True
             result.reasons.append(
                 f"age unverifiable on young-skewing platform(s) "
@@ -121,7 +148,7 @@ def hard_filter(person: Person) -> FilterResult:
     single_source = len(_platforms(person)) <= 1
     if single_source:
         result.flags.append("single_source")
-    if single_source and not has_professional_surface(person):
+    if single_source and config.require_surface and not has_professional_surface(person):
         result.excluded = True
         result.reasons.append(
             "single source with no professional surface (no github, linkedin, "
@@ -311,20 +338,24 @@ def uses_trajectory_fallback(person: Person) -> bool:
 # #30 Composite, flags, ranking
 # ---------------------------------------------------------------------------
 
-WEIGHTS = {"outlierness": 0.45, "trajectory": 0.30, "addressability": 0.25}
-
-
-def composite(outlierness_: float, trajectory_: float, addressability_: float) -> float:
+def composite(
+    outlierness_: float,
+    trajectory_: float,
+    addressability_: float,
+    config: "ScoringConfig" = None,
+) -> float:
+    weights = (config or DEFAULT_CONFIG).weights
     return (
-        WEIGHTS["outlierness"] * outlierness_
-        + WEIGHTS["trajectory"] * trajectory_
-        + WEIGHTS["addressability"] * addressability_
+        weights["outlierness"] * outlierness_
+        + weights["trajectory"] * trajectory_
+        + weights["addressability"] * addressability_
     )
 
 
-def score_person(person: Person) -> Scores:
+def score_person(person: Person, config: "ScoringConfig" = None) -> Scores:
     """Filter first, then score. Excluded people are scored and kept anyway."""
-    verdict = hard_filter(person)
+    config = config or DEFAULT_CONFIG
+    verdict = hard_filter(person, config)
 
     out = outlierness(person)
     traj = trajectory(person)
@@ -335,15 +366,15 @@ def score_person(person: Person) -> Scores:
         outlierness=round(out, 2),
         trajectory=round(traj, 2),
         addressability=addr,
-        composite=round(composite(out, traj, addr), 2),
+        composite=round(composite(out, traj, addr, config), 2),
         flags=verdict.flags,
         excluded=verdict.excluded,
         exclusion_reasons=verdict.reasons,
     )
 
 
-def score(persons: list[Person]) -> list[Scores]:
-    return [score_person(p) for p in persons]
+def score(persons: list[Person], config: "ScoringConfig" = None) -> list[Scores]:
+    return [score_person(p, config) for p in persons]
 
 
 def rank(scores: list[Scores]) -> list[Scores]:
