@@ -139,3 +139,15 @@ def test_skipping_fetch_still_processes_already_persisted_profiles(tmp_path):
 
 def test_fetch_is_a_skippable_stage(tmp_path):
     assert "fetch" in pipeline.SKIPPABLE_STAGES
+
+
+def test_discover_adapters_includes_the_remaining_epic_2_sources():
+    names = {pipeline.adapter_name(mod) for mod in pipeline.discover_adapters()}
+    assert names >= {
+        "codeforces",
+        "lichess",
+        "kaggle",
+        "metaculus",
+        "openalex",
+        "ctftime",
+    }
