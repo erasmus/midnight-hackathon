@@ -29,6 +29,7 @@ USER_AGENT = (
 DEFAULT_CACHE_DIR = Path(".cache/http")
 DEFAULT_MIN_INTERVAL = 1.0
 DEFAULT_TIMEOUT = 20.0
+NDJSON = "application/x-ndjson"
 
 
 class HttpError(RuntimeError):
@@ -58,33 +59,60 @@ class HttpClient:
     # -- public API -----------------------------------------------------
 
     def get_html(self, url: str) -> str:
-        return self._get_text(url)
+        return self._request("GET", url)
 
     def get_json(self, url: str) -> Any:
-        return json.loads(self._get_text(url))
+        return json.loads(self._request("GET", url))
+
+    def get_ndjson(self, url: str, accept: str = NDJSON) -> list[Any]:
+        """Newline-delimited JSON: one object per line, blank lines ignored."""
+        text = self._request("GET", url, accept=accept)
+        return [json.loads(line) for line in text.splitlines() if line.strip()]
+
+    def post_json(self, url: str, data: Any = None, accept: str = "application/json") -> Any:
+        """POST for bulk endpoints (e.g. Lichess `/api/users`, 300 ids a call).
+
+        Cached like a GET, but keyed on URL *and* body, so two different
+        batches to the same endpoint don't shadow each other.
+        """
+        return json.loads(self._request("POST", url, data=data, accept=accept))
+
+    def post_ndjson(self, url: str, data: Any = None) -> list[Any]:
+        text = self._request("POST", url, data=data, accept=NDJSON)
+        return [json.loads(line) for line in text.splitlines() if line.strip()]
 
     # -- internals ------------------------------------------------------
 
-    def _get_text(self, url: str) -> str:
-        cached = self._read_cache(url)
+    def _request(
+        self, method: str, url: str, data: Any = None, accept: str | None = None
+    ) -> str:
+        key = self._cache_key(method, url, data)
+        cached = self._read_cache(key)
         if cached is not None:
             return cached
-        text = self._fetch_with_retry(url)
-        self._write_cache(url, text)
+        text = self._fetch_with_retry(method, url, data, accept)
+        self._write_cache(key, text)
         return text
 
-    def _fetch_with_retry(self, url: str) -> str:
-        response = self._fetch(url)
+    def _fetch_with_retry(
+        self, method: str, url: str, data: Any, accept: str | None
+    ) -> str:
+        response = self._fetch(method, url, data, accept)
         if response.status_code >= 500:
             # One retry, then give up. Transient upstream blips are common;
             # hammering someone's API during a hackathon is not acceptable.
-            response = self._fetch(url)
+            response = self._fetch(method, url, data, accept)
         if response.status_code >= 400:
-            raise HttpError(f"GET {url} failed with HTTP {response.status_code}")
+            raise HttpError(f"{method} {url} failed with HTTP {response.status_code}")
         return response.text
 
-    def _fetch(self, url: str):
+    def _fetch(self, method: str, url: str, data: Any, accept: str | None):
         self._respect_rate_limit(urlparse(url).netloc)
+        if method == "POST":
+            headers = {"Accept": accept} if accept else None
+            return self.session.post(
+                url, data=data, headers=headers, timeout=self.timeout
+            )
         return self.session.get(url, timeout=self.timeout)
 
     def _respect_rate_limit(self, host: str) -> None:
@@ -97,16 +125,16 @@ class HttpClient:
                 now = self._clock() + wait
         self._last_request_at[host] = now
 
-    def _cache_path(self, url: str) -> Path:
-        digest = hashlib.sha256(url.encode("utf-8")).hexdigest()
-        return self.cache_dir / f"{digest}.txt"
+    def _cache_key(self, method: str, url: str, data: Any = None) -> str:
+        body = "" if data is None else str(data)
+        return hashlib.sha256(f"{method} {url} {body}".encode("utf-8")).hexdigest()
 
-    def _read_cache(self, url: str) -> str | None:
-        path = self._cache_path(url)
+    def _read_cache(self, key: str) -> str | None:
+        path = self.cache_dir / f"{key}.txt"
         return path.read_text(encoding="utf-8") if path.exists() else None
 
-    def _write_cache(self, url: str, text: str) -> None:
-        self._cache_path(url).write_text(text, encoding="utf-8")
+    def _write_cache(self, key: str, text: str) -> None:
+        (self.cache_dir / f"{key}.txt").write_text(text, encoding="utf-8")
 
 
 _default_client: HttpClient | None = None
@@ -126,3 +154,7 @@ def get_json(url: str) -> Any:
 
 def get_html(url: str) -> str:
     return default_client().get_html(url)
+
+
+def post_json(url: str, data: Any = None) -> Any:
+    return default_client().post_json(url, data)
