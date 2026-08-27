@@ -27,7 +27,10 @@ python -m pytest                      # tests (network-free)
 | `core/resolve.py` | the merge rule: three sanctioned mechanisms, one `_union` |
 | `core/score.py` | hard filters, three sub-scores, composite, ranking |
 | `docs/normalization.md` | **the mapping table** — every scoring constant, and which numbers are exact vs estimated |
-| `core/{normalize,enrich,outputs}.py`, `dossier.py` | stage stubs, filled in by Epics 4 and 6 |
+| `core/outputs.py` | `shortlist.csv` (top 20, survivors only) |
+| `core/sparkline.py` | inline-SVG rating sparkline, no dependencies |
+| `dossier.py` | self-contained HTML one-pager per shortlisted candidate |
+| `core/{normalize,enrich}.py` | stage stubs, filled in by Epic 4 |
 
 ## Adding an adapter
 
@@ -76,3 +79,24 @@ shortlist has to be auditable, including what it refused.
 See [docs/normalization.md](docs/normalization.md) for every constant and,
 importantly, which percentiles are exact (Codeforces only) and which are
 estimates (everything else).
+
+## Demo artifacts
+
+A run writes everything a human needs into `out/`:
+
+```bash
+python pipeline.py --top 60          # full run
+python dossier.py codeforces:ecnerwala   # one candidate, on demand
+```
+
+- `out/shortlist.csv` — top 20 by composite, **survivors only**, evidence as
+  readable prose rather than JSON.
+- `out/dossier-<person-id>.html` — one self-contained page per shortlisted
+  candidate: achievements with verifiable links, a trajectory sparkline, where
+  to reach them, and an **evidence appendix giving the provenance of every
+  link shown**.
+
+Dossiers are written for shortlist survivors only. The outreach angle is
+labelled `DRAFT — edit before sending`, and there is no send or automation
+capability anywhere in this codebase — by design. The system ranks and
+explains; a person decides and writes.
