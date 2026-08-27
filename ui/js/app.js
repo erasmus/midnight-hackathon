@@ -108,7 +108,7 @@ function renderShortlist() {
     .join("");
 
   return `
-    <p class="hook">35,000 applications. 35 seats. The best candidates never apply.</p>
+    <p class="hook">The best candidates never apply.</p>
     <p class="hook-sub">They don’t know they’re founders yet. Ranked by outlierness × trajectory × addressability. Consent-by-disclosure only.</p>
     <div class="table-wrap">
       <table class="shortlist">
@@ -257,7 +257,7 @@ function renderScript() {
     <div class="script">
       <p class="hook">Ninety seconds.</p>
       <ol>
-        <li>Hook: “35,000 applications, 35 seats — and the best candidates never apply, because they don’t know they’re founders yet.”</li>
+        <li>Hook: "The best candidates never apply, because they don’t know they’re founders yet.”</li>
         <li>Shortlist: real rankings, six domains, one schema. Point at composite = 0.45·out + 0.30·traj + 0.25·addr. Mention the relevance gate.</li>
         <li>Click the #1 row. Walk achievement → sparkline → evidence appendix. “Every link here was published by the candidate themselves — we index disclosure, we don’t unmask anyone. Polymarket is on our excluded list <em>by design</em>.”</li>
         <li>Coverage tab: “7 adapters tonight, 22 identified, one schema. The moat isn’t scraping — it’s the consented identity graph and the cross-domain normalization table.”</li>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outlier Engine — 10 minutes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/talk.css" />
+</head>
+<body>
+  <div class="deck" id="deck">
+    <header class="chrome">
+      <div class="mark">Outlier <span>Engine</span></div>
+      <p class="chrome-meta"><span id="clock">0:00</span> · <a href="index.html">demo UI</a></p>
+    </header>
+
+    <section class="slide is-active" data-min="0:00">
+      <p class="kicker">TechBBQ · 10 minutes</p>
+      <h1>A consent-first talent index for people who already proved it in public.</h1>
+      <p class="lede">We rank verified, exceptional performance in competitive domains — only when the person has voluntarily linked a professional identity. Output is dossiers for humans. There is no send button.</p>
+      <ul class="beats">
+        <li><strong>0:00</strong> Why this exists</li>
+        <li><strong>2:00</strong> Constraints + architecture</li>
+        <li><strong>4:00</strong> What is running today</li>
+        <li><strong>6:30</strong> Planned sources (open / first-party)</li>
+        <li><strong>9:00</strong> What we refuse, what’s next</li>
+      </ul>
+    </section>
+
+    <section class="slide" hidden data-min="0:40">
+      <p class="kicker">The gap</p>
+      <h1>The best people rarely sit in an applicant pile.</h1>
+      <p class="lede">They are already on leaderboards, rating lists, paper graphs, and public track records. Application funnels only see the people who already decided they are founders — or who know the program exists.</p>
+      <div class="grid-2">
+        <article>
+          <h3>Index disclosure</h3>
+          <p>Competition profiles that publicly link a real-world identity: real name, bio URL, or verifiable handle reuse with a corroborating signal.</p>
+        </article>
+        <article>
+          <h3>Do not unmask</h3>
+          <p>No de-anonymization, no wallet graphs, no cross-referencing to recover a pseudonym. If they did not publish the join, they are not in the index.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" hidden data-min="1:40">
+      <p class="kicker">Hard constraints</p>
+      <h1>Five rules the pipeline is not allowed to violate.</h1>
+      <ol class="rules">
+        <li><strong>Consent-by-disclosure only.</strong> Enter via a public self-link. Precision over recall.</li>
+        <li><strong>Age floor 18.</strong> Birth year when the source has it; young-skew platforms need independent adulthood evidence or we drop.</li>
+        <li><strong>Top-of-tail only.</strong> Top-N ≤ 500 per source. Polite rate limits (≥1s where there is no bulk endpoint). No bulk harvest.</li>
+        <li><strong>Relevance gate.</strong> Talent without a professional/technical surface (GitHub, LinkedIn self-link, site, papers) does not rank.</li>
+        <li><strong>Humans write.</strong> Rank and explain. A person decides. Draft outreach is labeled draft.</li>
+      </ol>
+    </section>
+
+    <section class="slide" hidden data-min="2:50">
+      <p class="kicker">Architecture</p>
+      <h1>One schema. One orchestrator. SQLite. No infra.</h1>
+      <p class="flow">adapters → normalize → resolve → enrich → score → rank → persist → shortlist + dossier</p>
+      <div class="grid-3">
+        <article>
+          <h3>Adapters</h3>
+          <p>Each source is a module: <code>fetch_top(n) → RawProfile[]</code>. Auto-discovered. A dead source is logged and skipped.</p>
+        </article>
+        <article>
+          <h3>Identity</h3>
+          <p>Only two joins: explicit self-links, and handle reuse with a corroborating signal. Uncorroborated collisions stay <code>weak_match</code> — never surfaced.</p>
+        </article>
+        <article>
+          <h3>HTTP</h3>
+          <p>One client for every request: per-host spacing, disk cache, retry-once on 5xx. Adapters do not speak to the network on their own.</p>
+        </article>
+      </div>
+      <p class="note">Evidence is non-negotiable: every identity link records <em>why</em> we believe it.</p>
+    </section>
+
+    <section class="slide" hidden data-min="4:00">
+      <p class="kicker">Current state · live in the repo</p>
+      <h1>The pipe is real. Two sources fetch. Downstream stages are wired as stubs.</h1>
+      <div class="status-grid">
+        <article class="ok">
+          <h3>Running</h3>
+          <ul>
+            <li><strong>Codeforces</strong> — ratedList (exact percentiles), rating ≥ 2400, contest history on the top slice, public name / org / country.</li>
+            <li><strong>Lichess</strong> — top 200 × blitz / rapid / classical, bulk user fetch, bio links, title + declared FIDE rating for a later join.</li>
+            <li><strong>pipeline.py</strong> — discover → fetch → normalize → resolve → enrich → score → persist → outputs. Any stage independently skippable.</li>
+            <li><strong>core.http + SQLite</strong> — rate limit, cache, idempotent upserts on <code>(platform, handle)</code>.</li>
+            <li><strong>Demo UI</strong> — shortlist, dossier (sparkline + evidence appendix), coverage, limitations. Fixture until the pipeline overwrites JSON.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Spec’d, not fetching yet</h3>
+          <ul>
+            <li>Kaggle (Meta Kaggle dump), FIDE rating list, Metaculus, OpenAlex, CTFtime — schema and coverage table exist; adapter modules are not in <code>adapters/</code>.</li>
+            <li>Resolve / enrich / score emit pass-through rows so a new adapter can run end-to-end tonight without waiting on Epic 3–5.</li>
+            <li>Composite is documented: <code>0.45·outlierness + 0.30·trajectory + 0.25·addressability</code>. Scoring code is still a stub.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" hidden data-min="5:20">
+      <p class="kicker">What a ranked row means</p>
+      <h1>Outlierness × trajectory × addressability.</h1>
+      <div class="weights">
+        <div><span>45%</span> Outlierness — platform percentile on a shared scale. Codeforces is exact (rank / rated population). Others: documented rank heuristic.</div>
+        <div><span>30%</span> Trajectory — 24-month rating slope where history exists; else account-age vs rank. Recency decay if inactive &gt; 90 days.</div>
+        <div><span>25%</span> Addressability — GitHub with real activity 40 · LinkedIn self-link 25 · site 20 · papers 15. Cap 100.</div>
+      </div>
+      <p class="lede tight">Multi-domain bonus +10 if top-1% in two <em>unrelated</em> domains (chess blitz + chess rapid = one domain). Hard filters first: age, already-founder, no professional surface.</p>
+      <p class="note">LinkedIn is stored from a self-published URL. We do not scrape it. The human opens the dossier.</p>
+    </section>
+
+    <section class="slide" hidden data-min="6:20">
+      <p class="kicker">Planned sources · open or first-party only</p>
+      <h1>Same schema, more tails — APIs and dumps, not HTML farms.</h1>
+      <p class="lede tight">Expansion list is restricted to documented APIs, bulk exports, and first-party data portals. Liquipedia: API / dumps only — no HTML scrape. Product Hunt GraphQL: non-commercial by default.</p>
+      <div class="src-groups">
+        <div>
+          <h3>Already in the pipe</h3>
+          <ul>
+            <li>Codeforces <em>adapter</em></li>
+            <li>Lichess API + databases <em>adapter</em></li>
+            <li>GitHub API <em>enricher</em></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Games &amp; competition</h3>
+          <ul>
+            <li>Chess.com PubAPI</li>
+            <li>Liquipedia <em>no HTML scrape</em></li>
+            <li>Riot</li>
+            <li>Steam</li>
+            <li>WCA results export</li>
+            <li>speedrun.com</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Research, IP, grants</h3>
+          <ul>
+            <li>arXiv <em>API / OAI / S3</em></li>
+            <li>Semantic Scholar</li>
+            <li>NSF Awards</li>
+            <li>USPTO Open Data Portal</li>
+            <li>EU CORDIS</li>
+            <li>Open Library <em>ISBN</em></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Public graph &amp; orgs</h3>
+          <ul>
+            <li>YouTube Data API</li>
+            <li>Twitch Helix</li>
+            <li>RDAP</li>
+            <li>Companies House</li>
+            <li>Product Hunt GraphQL</li>
+            <li>Hacker News Firebase API</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" hidden data-min="8:10">
+      <p class="kicker">Excluded by design</p>
+      <h1>The moat is not scraping.</h1>
+      <p class="lede">It is the consented identity graph and a documented cross-domain normalization table. These sources stay off the list on purpose.</p>
+      <div class="excluded-row">
+        <article>
+          <h3>Polymarket &amp; prediction wallets</h3>
+          <p>Wallet-linked, pseudonymous by default. Indexing it invites unmasking.</p>
+        </article>
+        <article>
+          <h3>On-chain / ENS / wallet graphs</h3>
+          <p>Joining a wallet to a person is the opposite of consent-by-disclosure.</p>
+        </article>
+        <article>
+          <h3>Private Discords, Telegrams, lists</h3>
+          <p>Not public self-links. Out of scope.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" hidden data-min="9:00">
+      <p class="kicker">Say this before anyone else does</p>
+      <h1>Known limits of the v0.</h1>
+      <div class="grid-2">
+        <article>
+          <h3>Percentiles are a heuristic</h3>
+          <p>Codeforces is exact. Everything else is rank against a published or estimated population. Cross-domain comparability is a research problem; we shipped a documented first pass.</p>
+        </article>
+        <article>
+          <h3>Matching is low-recall on purpose</h3>
+          <p>Twenty correct people beat two hundred with three errors. Handle collision alone is never identity.</p>
+        </article>
+        <article>
+          <h3>No founder backtest yet</h3>
+          <p>The obvious next experiment: take known founders and walk their public traces backward through these sources.</p>
+        </article>
+        <article>
+          <h3>Fixture vs live</h3>
+          <p>The shortlist on screen is labeled fixture until <code>pipeline.py</code> overwrites it. Do not claim placeholder names as live hits.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" hidden data-min="9:40">
+      <p class="kicker">Close</p>
+      <h1>Index what people already published. Rank the tail. Hand a human a dossier.</h1>
+      <p class="lede">Two adapters live, one schema, a pipeline that will not sink if a source dies, and a source map that only uses open or first-party APIs.</p>
+      <p class="close-cta"><a href="index.html">Open the demo UI</a> — shortlist → dossier → evidence appendix.</p>
+      <p class="note">← → or space to move · N for speaker notes · F for fullscreen</p>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <button type="button" id="prev" aria-label="Previous slide">←</button>
+    <div class="dots" id="dots"></div>
+    <button type="button" id="next" aria-label="Next slide">→</button>
+  </footer>
+
+  <aside class="notes" id="notes" hidden>
+    <p class="notes-label">Speaker notes</p>
+    <div id="notes-body"></div>
+  </aside>
+
+  <script src="js/talk.js"></script>
+</body>
+</html>

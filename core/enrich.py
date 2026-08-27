@@ -11,3 +11,10 @@ from core.schema import Person
 
 def enrich(persons: list[Person]) -> list[Person]:
     return persons
+
+
+def lookup_papers(name: str, institution: str | None = None, client=None):
+    """Epic 4 hook: OpenAlex papers for a resolved name (issue #17 enricher)."""
+    from adapters import openalex as openalex_adapter
+
+    return openalex_adapter.lookup_papers(name, institution=institution, client=client)
