@@ -1,0 +1,42 @@
+{
+  "built": [
+    {"name": "Kaggle", "domain": "Applied ML", "tier": "P0", "status": "built", "metric": "Competitions Master+"},
+    {"name": "Codeforces", "domain": "Competitive programming", "tier": "P0", "status": "built", "metric": "Rating ≥ 2400"},
+    {"name": "Lichess", "domain": "Chess", "tier": "P0", "status": "built", "metric": "Top 200 / time control"},
+    {"name": "FIDE", "domain": "Chess", "tier": "P0", "status": "built", "metric": "Elo ≥ 2500; rising ≥ 2300"},
+    {"name": "Metaculus", "domain": "Forecasting", "tier": "P1", "status": "built", "metric": "Peer / tournament rank"},
+    {"name": "OpenAlex", "domain": "Research", "tier": "P1", "status": "built", "metric": "Citation velocity × career length"},
+    {"name": "CTFtime", "domain": "Security", "tier": "P2", "status": "built", "metric": "Top 50 teams"}
+  ],
+  "roadmap": [
+    {"name": "AtCoder", "domain": "Competitive programming", "tier": "P1", "status": "identified", "note": "Heuristic ratings; strong JP/APAC coverage"},
+    {"name": "chess.com", "domain": "Chess", "tier": "P1", "status": "identified", "note": "Join to FIDE via title + name; ToS-sensitive"},
+    {"name": "IMO / IOI honor rolls", "domain": "Olympiads", "tier": "P1", "status": "identified", "note": "Real names by construction; age often known"},
+    {"name": "TopCoder", "domain": "Competitive programming", "tier": "P1", "status": "identified", "note": "Algorithm + marathon; aging but still signal"},
+    {"name": "Hugging Face Hub", "domain": "Applied ML", "tier": "P1", "status": "identified", "note": "Self-linked authors on high-download models"},
+    {"name": "Papers with Code", "domain": "Research / ML", "tier": "P2", "status": "identified", "note": "Overlaps OpenAlex; useful for GitHub artifacts"},
+    {"name": "Good Judgment Open", "domain": "Forecasting", "tier": "P2", "status": "identified", "note": "Public track records; name-heavy"},
+    {"name": "CodeChef", "domain": "Competitive programming", "tier": "P2", "status": "identified", "note": "Starters/Cook-off ratings; IN coverage"},
+    {"name": "DrivenData", "domain": "Applied ML", "tier": "P2", "status": "identified", "note": "Social-impact competitions; smaller field"},
+    {"name": "Zindi", "domain": "Applied ML", "tier": "P2", "status": "identified", "note": "African talent density the US pipelines miss"},
+    {"name": "Putnam / official math lists", "domain": "Olympiads", "tier": "P2", "status": "identified", "note": "University = adulthood evidence"},
+    {"name": "Hack The Box", "domain": "Security", "tier": "P2", "status": "identified", "note": "Public profiles only; no handle fishing"},
+    {"name": "Advent of Code (public boards)", "domain": "Programming", "tier": "P3", "status": "identified", "note": "Only self-published leaderboards"},
+    {"name": "DBLP homepages", "domain": "Research", "tier": "P3", "status": "identified", "note": "Author pages often self-link GitHub"},
+    {"name": "speedrun.com", "domain": "Esports-adjacent", "tier": "P3", "status": "identified", "note": "Young-skew: adulthood evidence required or drop"}
+  ],
+  "excluded": [
+    {
+      "name": "Polymarket",
+      "reason": "Wallet-linked and pseudonymous by default. Indexing it invites unmasking. Excluded by design — we index disclosure, we do not deanonymize."
+    },
+    {
+      "name": "On-chain / ENS / wallet graphs",
+      "reason": "Cross-referencing wallets to real-world identity is the opposite of consent-by-disclosure."
+    },
+    {
+      "name": "Private Discord / Telegram / email lists",
+      "reason": "Not public self-links. Out of scope."
+    }
+  ]
+}

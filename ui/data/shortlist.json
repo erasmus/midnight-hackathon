@@ -1,0 +1,740 @@
+{
+  "generated_at": "2026-08-27T22:00:00Z",
+  "fixture": true,
+  "people": [
+    {
+      "id": "p-ananya-rao",
+      "canonical_name": "Ananya Rao",
+      "location": "Zürich, CH",
+      "why_now": "Crossed IGM on Codeforces while shipping a 2.1k★ eval harness — still IC-shaped, no founder language anywhere.",
+      "outreach_draft": "Your eval-harness writeup and the last eighteen months of CF rating tell the same story: you keep raising the difficulty of the problem you're willing to own. If you're even slightly curious about turning that instinct into a company, I'd like to send a short brief — no pitch deck.",
+      "warm_paths": [
+        "Shared coauthor on the 2025 MLSys workshop paper (OpenAlex)",
+        "GitHub org members overlapping a YC W24 infra company"
+      ],
+      "profiles": [
+        {
+          "platform": "codeforces",
+          "handle": "arao",
+          "display_name": "Ananya Rao",
+          "metric_value": 2684,
+          "metric_name": "cf_rating",
+          "rank": 412,
+          "percentile": 99.91,
+          "rating_history": [
+            ["2024-09-01", 2390],
+            ["2024-10-12", 2418],
+            ["2024-11-20", 2441],
+            ["2024-12-28", 2476],
+            ["2025-02-08", 2510],
+            ["2025-03-22", 2538],
+            ["2025-05-03", 2572],
+            ["2025-06-14", 2599],
+            ["2025-07-26", 2631],
+            ["2025-08-20", 2684]
+          ],
+          "profile_links": ["https://github.com/arao", "https://ananyarao.dev"],
+          "country": "CH",
+          "birth_year": null,
+          "profile_url": "https://codeforces.com/profile/arao",
+          "fetched_at": "2026-08-27T20:00:00Z"
+        },
+        {
+          "platform": "kaggle",
+          "handle": "ananyarao",
+          "display_name": "Ananya Rao",
+          "metric_value": 7,
+          "metric_name": "kaggle_comp_medals_gold",
+          "rank": 86,
+          "percentile": 99.4,
+          "rating_history": [],
+          "profile_links": ["https://github.com/arao", "https://www.linkedin.com/in/ananya-rao"],
+          "country": "CH",
+          "birth_year": null,
+          "profile_url": "https://www.kaggle.com/ananyarao",
+          "fetched_at": "2026-08-27T20:01:00Z"
+        }
+      ],
+      "github": {
+        "login": "arao",
+        "account_age_years": 6.2,
+        "followers": 890,
+        "star_sum": 4120,
+        "recent_push_days_ago": 4,
+        "topics": ["evaluation", "llm", "rust"],
+        "activity_acceleration": 1.8
+      },
+      "linkedin_url": "https://www.linkedin.com/in/ananya-rao",
+      "website": "https://ananyarao.dev",
+      "papers": [
+        {
+          "title": "Cheap, Sharp: Calibration Under Distribution Shift",
+          "year": 2025,
+          "venue": "MLSys Workshop",
+          "url": "https://openalex.org/W0000000001"
+        }
+      ],
+      "evidence": [
+        "Codeforces profile lists github.com/arao in the organization field",
+        "Codeforces firstName+lastName matches Kaggle display name exactly",
+        "Kaggle profile page self-links linkedin.com/in/ananya-rao and github.com/arao",
+        "GitHub user arao display name 'Ananya Rao'; bio mentions 'CF'",
+        "Personal site ananyarao.dev linked from both CF and GitHub"
+      ],
+      "scores": {
+        "outlierness": 94,
+        "trajectory": 88,
+        "addressability": 100,
+        "composite": 93.1,
+        "flags": []
+      }
+    },
+    {
+      "id": "p-elias-vukovic",
+      "canonical_name": "Elias Vuković",
+      "location": "Belgrade, RS",
+      "why_now": "FIDE 2542 and a public chess-engine repo with accelerating commits; no company/founder markers.",
+      "outreach_draft": "The engine's search-debug notes read like someone who enjoys making a hard system inspectable. That's a founder-shaped habit, even if you haven't named it that yet.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "lichess",
+          "handle": "vukovic_gm",
+          "display_name": "Elias Vuković",
+          "metric_value": 2710,
+          "metric_name": "lichess_classical",
+          "rank": 48,
+          "percentile": 99.8,
+          "rating_history": [
+            ["2024-09-01", 2620],
+            ["2024-11-01", 2644],
+            ["2025-01-15", 2661],
+            ["2025-04-02", 2678],
+            ["2025-06-18", 2695],
+            ["2025-08-12", 2710]
+          ],
+          "profile_links": ["https://github.com/evukovic"],
+          "country": "RS",
+          "birth_year": null,
+          "profile_url": "https://lichess.org/@/vukovic_gm",
+          "fetched_at": "2026-08-27T20:02:00Z"
+        },
+        {
+          "platform": "fide",
+          "handle": "15001234",
+          "display_name": "Vukovic, Elias",
+          "metric_value": 2542,
+          "metric_name": "fide_standard",
+          "rank": null,
+          "percentile": 99.7,
+          "rating_history": [],
+          "profile_links": [],
+          "country": "SRB",
+          "birth_year": 1999,
+          "profile_url": "https://ratings.fide.com/profile/15001234",
+          "fetched_at": "2026-08-27T20:02:00Z"
+        }
+      ],
+      "github": {
+        "login": "evukovic",
+        "account_age_years": 4.1,
+        "followers": 210,
+        "star_sum": 960,
+        "recent_push_days_ago": 11,
+        "topics": ["chess", "search", "cpp"],
+        "activity_acceleration": 1.4
+      },
+      "linkedin_url": null,
+      "website": null,
+      "papers": [],
+      "evidence": [
+        "Lichess title GM + display name matched FIDE (title exact, name similarity 0.96)",
+        "FIDE birth year 1999 copied onto Person (age floor satisfied)",
+        "Lichess bio contains github.com/evukovic",
+        "GitHub evukovic bio: 'lichess gm'; display name Elias Vukovic"
+      ],
+      "scores": {
+        "outlierness": 91,
+        "trajectory": 72,
+        "addressability": 40,
+        "composite": 72.6,
+        "flags": ["single_source"]
+      }
+    },
+    {
+      "id": "p-jun-park",
+      "canonical_name": "Jun Park",
+      "location": "Seoul, KR",
+      "why_now": "Top-20 Metaculus plus a short, high-velocity OpenAlex record in ML theory — still a PhD-shaped bio.",
+      "outreach_draft": "Your tournament writeups treat calibration as an engineering problem, not a vibe. I'd like to talk about whether that should live as a product rather than a side quest.",
+      "warm_paths": ["OpenAlex affiliation: KAIST CS"],
+      "profiles": [
+        {
+          "platform": "metaculus",
+          "handle": "jpark",
+          "display_name": "Jun Park",
+          "metric_value": 1840,
+          "metric_name": "metaculus_peer_score",
+          "rank": 17,
+          "percentile": 99.6,
+          "rating_history": [],
+          "profile_links": ["https://github.com/junpark", "https://parkjun.kr"],
+          "country": "KR",
+          "birth_year": null,
+          "profile_url": "https://www.metaculus.com/accounts/profile/jpark",
+          "fetched_at": "2026-08-27T20:03:00Z"
+        },
+        {
+          "platform": "openalex",
+          "handle": "A000junpark",
+          "display_name": "Jun Park",
+          "metric_value": 412,
+          "metric_name": "citation_velocity",
+          "rank": null,
+          "percentile": 99.2,
+          "rating_history": [],
+          "profile_links": ["https://orcid.org/0000-0002-0000-0001"],
+          "country": "KR",
+          "birth_year": null,
+          "profile_url": "https://openalex.org/A000junpark",
+          "fetched_at": "2026-08-27T20:03:00Z"
+        }
+      ],
+      "github": {
+        "login": "junpark",
+        "account_age_years": 5.0,
+        "followers": 340,
+        "star_sum": 1502,
+        "recent_push_days_ago": 9,
+        "topics": ["forecasting", "bayes", "python"],
+        "activity_acceleration": 1.2
+      },
+      "linkedin_url": null,
+      "website": "https://parkjun.kr",
+      "papers": [
+        {
+          "title": "Proper Scoring Rules under Partial Information",
+          "year": 2024,
+          "venue": "AISTATS",
+          "url": "https://openalex.org/W0000000002"
+        }
+      ],
+      "evidence": [
+        "Metaculus profile bio links github.com/junpark and parkjun.kr",
+        "OpenAlex author 'Jun Park' at KAIST; homepage matches parkjun.kr",
+        "GitHub junpark display name Jun Park; pinned repo named in the AISTATS paper"
+      ],
+      "scores": {
+        "outlierness": 89,
+        "trajectory": 70,
+        "addressability": 75,
+        "composite": 79.8,
+        "flags": []
+      }
+    },
+    {
+      "id": "p-sofia-lindgren",
+      "canonical_name": "Sofia Lindgren",
+      "location": "Stockholm, SE",
+      "why_now": "Named on a top-20 CTFtime team page with a self-linked GitHub that actually ships; still listing as student/IC.",
+      "outreach_draft": "The challenge writeups on your site are unusually good at teaching the *next* attacker. That's a product instinct hiding in a hobby.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "ctftime",
+          "handle": "slindgren",
+          "display_name": "Sofia Lindgren",
+          "metric_value": 12,
+          "metric_name": "ctftime_team_rank_2026",
+          "rank": 12,
+          "percentile": null,
+          "rating_history": [],
+          "profile_links": ["https://github.com/slindgren", "https://lindgren.se"],
+          "country": "SE",
+          "birth_year": null,
+          "profile_url": "https://ctftime.org/team/99999",
+          "fetched_at": "2026-08-27T20:04:00Z"
+        }
+      ],
+      "github": {
+        "login": "slindgren",
+        "account_age_years": 7.4,
+        "followers": 120,
+        "star_sum": 430,
+        "recent_push_days_ago": 2,
+        "topics": ["pwn", "rust"],
+        "activity_acceleration": 1.6
+      },
+      "linkedin_url": "https://www.linkedin.com/in/sofia-lindgren",
+      "website": "https://lindgren.se",
+      "papers": [],
+      "evidence": [
+        "CTFtime team page lists member Sofia Lindgren with github.com/slindgren (explicit attribution)",
+        "Personal site lindgren.se self-links LinkedIn and the same GitHub",
+        "University graduation year on site used as adulthood evidence (speedrun-adjacent platforms not involved)"
+      ],
+      "scores": {
+        "outlierness": 78,
+        "trajectory": 81,
+        "addressability": 85,
+        "composite": 80.65,
+        "flags": ["single_source"]
+      }
+    },
+    {
+      "id": "p-mateo-alvarez",
+      "canonical_name": "Mateo Álvarez",
+      "location": "Buenos Aires, AR",
+      "why_now": "CF 2510 with a steep 24-month slope and a LinkedIn self-link — addressable, not yet a founder bio.",
+      "outreach_draft": "The contest graphs and the compiler-notes repo suggest you like tightening loops until they're obvious. That's a company, not a hobby, if you want it to be.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "codeforces",
+          "handle": "malvarez",
+          "display_name": "Mateo Alvarez",
+          "metric_value": 2510,
+          "metric_name": "cf_rating",
+          "rank": 890,
+          "percentile": 99.72,
+          "rating_history": [
+            ["2024-09-01", 2210],
+            ["2024-12-01", 2288],
+            ["2025-03-01", 2375],
+            ["2025-06-01", 2452],
+            ["2025-08-18", 2510]
+          ],
+          "profile_links": ["https://www.linkedin.com/in/mateo-alvarez"],
+          "country": "AR",
+          "birth_year": null,
+          "profile_url": "https://codeforces.com/profile/malvarez",
+          "fetched_at": "2026-08-27T20:05:00Z"
+        }
+      ],
+      "github": {
+        "login": "malvarez",
+        "account_age_years": 3.3,
+        "followers": 95,
+        "star_sum": 180,
+        "recent_push_days_ago": 21,
+        "topics": ["compilers"],
+        "activity_acceleration": 1.1
+      },
+      "linkedin_url": "https://www.linkedin.com/in/mateo-alvarez",
+      "website": null,
+      "papers": [],
+      "evidence": [
+        "Codeforces organization field contains linkedin.com/in/mateo-alvarez",
+        "GitHub handle-reuse malvarez corroborated by identical display name"
+      ],
+      "scores": {
+        "outlierness": 86,
+        "trajectory": 90,
+        "addressability": 65,
+        "composite": 81.95,
+        "flags": ["single_source"]
+      }
+    },
+    {
+      "id": "p-noura-elamin",
+      "canonical_name": "Noura Elamin",
+      "location": "London, GB",
+      "why_now": "Kaggle Competitions Grandmaster with an active GitHub and two OpenAlex papers; bio is research engineer, not founder.",
+      "outreach_draft": "The medal writeups keep ending on 'what we'd ship if this were a product.' I'd like to take that sentence seriously.",
+      "warm_paths": ["OpenAlex coauthor at DeepMind (former)"],
+      "profiles": [
+        {
+          "platform": "kaggle",
+          "handle": "nelamin",
+          "display_name": "Noura Elamin",
+          "metric_value": 11,
+          "metric_name": "kaggle_comp_medals_gold",
+          "rank": 40,
+          "percentile": 99.7,
+          "rating_history": [],
+          "profile_links": ["https://github.com/nelamin", "https://www.linkedin.com/in/noura-elamin"],
+          "country": "GB",
+          "birth_year": null,
+          "profile_url": "https://www.kaggle.com/nelamin",
+          "fetched_at": "2026-08-27T20:06:00Z"
+        }
+      ],
+      "github": {
+        "login": "nelamin",
+        "account_age_years": 8.0,
+        "followers": 2100,
+        "star_sum": 8800,
+        "recent_push_days_ago": 6,
+        "topics": ["tabular", "cv"],
+        "activity_acceleration": 0.9
+      },
+      "linkedin_url": "https://www.linkedin.com/in/noura-elamin",
+      "website": "https://nouraelamin.com",
+      "papers": [
+        {
+          "title": "Leakage-Aware Validation for Tabular Competitions",
+          "year": 2023,
+          "venue": "KDD Workshop",
+          "url": "https://openalex.org/W0000000003"
+        }
+      ],
+      "evidence": [
+        "Kaggle profile self-links GitHub nelamin and LinkedIn",
+        "Personal site listed on GitHub; OpenAlex author matches name + GitHub in paper artifacts"
+      ],
+      "scores": {
+        "outlierness": 92,
+        "trajectory": 61,
+        "addressability": 100,
+        "composite": 84.7,
+        "flags": []
+      }
+    },
+    {
+      "id": "p-theo-mbeki",
+      "canonical_name": "Theo Mbeki",
+      "location": "Cape Town, ZA",
+      "why_now": "OpenAlex high citation velocity, first paper 2022, GitHub with real recent activity — pre-intent surface.",
+      "outreach_draft": "Four years from first paper to a tooling repo other labs are starring is a steep curve. If you want that curve pointed at a company, I can help you test the idea in writing first.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "openalex",
+          "handle": "A000mbeki",
+          "display_name": "Theo Mbeki",
+          "metric_value": 620,
+          "metric_name": "citation_velocity",
+          "rank": null,
+          "percentile": 99.5,
+          "rating_history": [],
+          "profile_links": ["https://github.com/tmbeki", "https://orcid.org/0000-0002-1111-1111"],
+          "country": "ZA",
+          "birth_year": null,
+          "profile_url": "https://openalex.org/A000mbeki",
+          "fetched_at": "2026-08-27T20:07:00Z"
+        }
+      ],
+      "github": {
+        "login": "tmbeki",
+        "account_age_years": 4.7,
+        "followers": 540,
+        "star_sum": 2300,
+        "recent_push_days_ago": 8,
+        "topics": ["bioinformatics", "python"],
+        "activity_acceleration": 1.5
+      },
+      "linkedin_url": null,
+      "website": "https://tmbeki.github.io",
+      "papers": [
+        {
+          "title": "Fast homology search on commodity GPUs",
+          "year": 2024,
+          "venue": "Bioinformatics",
+          "url": "https://openalex.org/W0000000004"
+        }
+      ],
+      "evidence": [
+        "OpenAlex author page lists github.com/tmbeki in works' repositories",
+        "GitHub tmbeki display name matches; employment listed (adulthood evidence)"
+      ],
+      "scores": {
+        "outlierness": 88,
+        "trajectory": 77,
+        "addressability": 75,
+        "composite": 81.45,
+        "flags": ["single_source"]
+      }
+    },
+    {
+      "id": "p-irene-costa",
+      "canonical_name": "Irene Costa",
+      "location": "Lisbon, PT",
+      "why_now": "Lichess IM + FIDE 2410 born 2002, GitHub activity; age verified, not a founder.",
+      "outreach_draft": "You already write about teaching search heuristics to juniors. That's a wedge — I'd like to hear what you'd build if the students paid.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "lichess",
+          "handle": "icosta",
+          "display_name": "Irene Costa",
+          "metric_value": 2488,
+          "metric_name": "lichess_rapid",
+          "rank": 160,
+          "percentile": 99.3,
+          "rating_history": [
+            ["2024-09-01", 2380],
+            ["2025-01-01", 2422],
+            ["2025-05-01", 2460],
+            ["2025-08-01", 2488]
+          ],
+          "profile_links": ["https://github.com/irenecosta"],
+          "country": "PT",
+          "birth_year": null,
+          "profile_url": "https://lichess.org/@/icosta",
+          "fetched_at": "2026-08-27T20:08:00Z"
+        },
+        {
+          "platform": "fide",
+          "handle": "19009999",
+          "display_name": "Costa, Irene",
+          "metric_value": 2410,
+          "metric_name": "fide_standard",
+          "rank": null,
+          "percentile": 99.1,
+          "rating_history": [],
+          "profile_links": [],
+          "country": "POR",
+          "birth_year": 2002,
+          "profile_url": "https://ratings.fide.com/profile/19009999",
+          "fetched_at": "2026-08-27T20:08:00Z"
+        }
+      ],
+      "github": {
+        "login": "irenecosta",
+        "account_age_years": 2.8,
+        "followers": 60,
+        "star_sum": 90,
+        "recent_push_days_ago": 30,
+        "topics": ["education"],
+        "activity_acceleration": 1.0
+      },
+      "linkedin_url": "https://www.linkedin.com/in/irene-costa",
+      "website": null,
+      "papers": [],
+      "evidence": [
+        "Lichess title IM + name matched FIDE (exact title, similarity 0.94)",
+        "FIDE birth year 2002 — age floor ok",
+        "Lichess bio self-links github.com/irenecosta"
+      ],
+      "scores": {
+        "outlierness": 80,
+        "trajectory": 74,
+        "addressability": 65,
+        "composite": 74.45,
+        "flags": []
+      }
+    },
+    {
+      "id": "p-owen-blake",
+      "canonical_name": "Owen Blake",
+      "location": "Toronto, CA",
+      "why_now": "CF 2440, account created 2023, already top-1k — trajectory-from-age heuristic firing.",
+      "outreach_draft": "Two years from first contest to IGM-adjacent is the kind of slope investors never see on a LinkedIn. I'd rather you heard that from a human than a form.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "codeforces",
+          "handle": "oblake",
+          "display_name": "Owen Blake",
+          "metric_value": 2440,
+          "metric_name": "cf_rating",
+          "rank": 1402,
+          "percentile": 99.55,
+          "rating_history": [
+            ["2024-09-01", 1980],
+            ["2024-12-01", 2140],
+            ["2025-03-01", 2288],
+            ["2025-06-01", 2380],
+            ["2025-08-10", 2440]
+          ],
+          "profile_links": ["https://github.com/oblake"],
+          "country": "CA",
+          "birth_year": null,
+          "profile_url": "https://codeforces.com/profile/oblake",
+          "fetched_at": "2026-08-27T20:09:00Z"
+        }
+      ],
+      "github": {
+        "login": "oblake",
+        "account_age_years": 2.1,
+        "followers": 40,
+        "star_sum": 55,
+        "recent_push_days_ago": 3,
+        "topics": ["cp"],
+        "activity_acceleration": 2.1
+      },
+      "linkedin_url": null,
+      "website": null,
+      "papers": [],
+      "evidence": [
+        "Codeforces firstName lastName present; GitHub oblake same display name and bio 'codeforces'",
+        "Employment listed on GitHub (adulthood evidence; CF not young-skew in the same way as speedrun)"
+      ],
+      "scores": {
+        "outlierness": 84,
+        "trajectory": 93,
+        "addressability": 40,
+        "composite": 75.7,
+        "flags": ["single_source", "age_unknown"]
+      }
+    },
+    {
+      "id": "p-haya-nasser",
+      "canonical_name": "Haya Nasser",
+      "location": "Amman, JO",
+      "why_now": "Metaculus tournament top-50 with a personal site and GitHub; forecasting as a craft, not a brand.",
+      "outreach_draft": "You already publish the reasoning, not just the numbers. That's the seed of a research tool or a fund — your call which.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "metaculus",
+          "handle": "hnasser",
+          "display_name": "Haya Nasser",
+          "metric_value": 1210,
+          "metric_name": "metaculus_peer_score",
+          "rank": 44,
+          "percentile": 99.1,
+          "rating_history": [],
+          "profile_links": ["https://hayanasser.com", "https://github.com/hayanasser"],
+          "country": "JO",
+          "birth_year": null,
+          "profile_url": "https://www.metaculus.com/accounts/profile/hnasser",
+          "fetched_at": "2026-08-27T20:10:00Z"
+        }
+      ],
+      "github": {
+        "login": "hayanasser",
+        "account_age_years": 5.5,
+        "followers": 80,
+        "star_sum": 140,
+        "recent_push_days_ago": 14,
+        "topics": ["forecasting"],
+        "activity_acceleration": 0.8
+      },
+      "linkedin_url": "https://www.linkedin.com/in/haya-nasser",
+      "website": "https://hayanasser.com",
+      "papers": [],
+      "evidence": [
+        "Metaculus bio self-links hayanasser.com; site lists GitHub and LinkedIn"
+      ],
+      "scores": {
+        "outlierness": 76,
+        "trajectory": 58,
+        "addressability": 85,
+        "composite": 72.85,
+        "flags": ["single_source"]
+      }
+    },
+    {
+      "id": "p-kai-muller",
+      "canonical_name": "Kai Müller",
+      "location": "Berlin, DE",
+      "why_now": "Kaggle Master + CF 2420; two unrelated domains, multi-domain bonus applied.",
+      "outreach_draft": "Most people who are this good at two games pick a job. The interesting ones haven't picked yet. If that's you, the next conversation is short.",
+      "warm_paths": [],
+      "profiles": [
+        {
+          "platform": "kaggle",
+          "handle": "kmueller",
+          "display_name": "Kai Müller",
+          "metric_value": 3,
+          "metric_name": "kaggle_comp_medals_gold",
+          "rank": 210,
+          "percentile": 99.2,
+          "rating_history": [],
+          "profile_links": ["https://github.com/kmueller"],
+          "country": "DE",
+          "birth_year": null,
+          "profile_url": "https://www.kaggle.com/kmueller",
+          "fetched_at": "2026-08-27T20:11:00Z"
+        },
+        {
+          "platform": "codeforces",
+          "handle": "kmueller",
+          "display_name": "Kai Mueller",
+          "metric_value": 2420,
+          "metric_name": "cf_rating",
+          "rank": 1604,
+          "percentile": 99.5,
+          "rating_history": [
+            ["2024-09-01", 2305],
+            ["2025-02-01", 2360],
+            ["2025-07-01", 2420]
+          ],
+          "profile_links": ["https://github.com/kmueller"],
+          "country": "DE",
+          "birth_year": null,
+          "profile_url": "https://codeforces.com/profile/kmueller",
+          "fetched_at": "2026-08-27T20:11:00Z"
+        }
+      ],
+      "github": {
+        "login": "kmueller",
+        "account_age_years": 6.0,
+        "followers": 200,
+        "star_sum": 310,
+        "recent_push_days_ago": 18,
+        "topics": ["ml", "cp"],
+        "activity_acceleration": 0.7
+      },
+      "linkedin_url": null,
+      "website": "https://kmueller.dev",
+      "papers": [],
+      "evidence": [
+        "Same GitHub self-linked from Kaggle and Codeforces (merge via mechanism 1)",
+        "Handle reuse kmueller on GitHub corroborated by display name"
+      ],
+      "scores": {
+        "outlierness": 96,
+        "trajectory": 64,
+        "addressability": 60,
+        "composite": 77.4,
+        "flags": []
+      }
+    },
+    {
+      "id": "p-priya-shah",
+      "canonical_name": "Priya Shah",
+      "location": "Austin, US",
+      "why_now": "OpenAlex + GitHub acceleration; first publication 2021, still lists as senior engineer.",
+      "outreach_draft": "The systems papers and the infra repo are already a company thesis. I'm not asking you to quit — I'm asking if you've written the one-pager yet.",
+      "warm_paths": ["Shared GitHub org with two ex-founders (visible membership)"],
+      "profiles": [
+        {
+          "platform": "openalex",
+          "handle": "A000pshah",
+          "display_name": "Priya Shah",
+          "metric_value": 380,
+          "metric_name": "citation_velocity",
+          "rank": null,
+          "percentile": 98.9,
+          "rating_history": [],
+          "profile_links": ["https://github.com/priyashah"],
+          "country": "US",
+          "birth_year": null,
+          "profile_url": "https://openalex.org/A000pshah",
+          "fetched_at": "2026-08-27T20:12:00Z"
+        }
+      ],
+      "github": {
+        "login": "priyashah",
+        "account_age_years": 9.0,
+        "followers": 670,
+        "star_sum": 5100,
+        "recent_push_days_ago": 1,
+        "topics": ["distributed-systems", "go"],
+        "activity_acceleration": 1.7
+      },
+      "linkedin_url": "https://www.linkedin.com/in/priya-shah",
+      "website": "https://priyashah.net",
+      "papers": [
+        {
+          "title": "Tail latency as a product constraint",
+          "year": 2024,
+          "venue": "OSDI (workshop)",
+          "url": "https://openalex.org/W0000000005"
+        }
+      ],
+      "evidence": [
+        "OpenAlex homepage + GitHub priyashah; LinkedIn on personal site only (stored, not scraped)"
+      ],
+      "scores": {
+        "outlierness": 82,
+        "trajectory": 85,
+        "addressability": 100,
+        "composite": 87.4,
+        "flags": ["single_source"]
+      }
+    }
+  ]
+}
