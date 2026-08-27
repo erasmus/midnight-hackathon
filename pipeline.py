@@ -34,7 +34,7 @@ from core import score as score_stage
 from core.db import DEFAULT_DB_PATH, Database
 from core.schema import Person, RawProfile, Scores
 
-SKIPPABLE_STAGES = ("normalize", "resolve", "enrich", "score", "outputs")
+SKIPPABLE_STAGES = ("fetch", "normalize", "resolve", "enrich", "score", "outputs")
 DEFAULT_TOP_N = 100
 DEFAULT_OUT_DIR = Path("out")
 
@@ -91,12 +91,14 @@ def run(
         return True
 
     with Database(db_path) as db:
-        print("fetching...")
-        profiles = collect(adapters, top_n, result.adapter_errors)
-
-        if active("normalize"):
-            profiles = normalize_stage.normalize(profiles)
-        db.upsert_raw_profiles(profiles)
+        # --skip-fetch re-runs the rest of the pipeline over whatever is
+        # already in the DB: no network, no waiting on someone else's API.
+        if active("fetch"):
+            print("fetching...")
+            profiles = collect(adapters, top_n, result.adapter_errors)
+            if active("normalize"):
+                profiles = normalize_stage.normalize(profiles)
+            db.upsert_raw_profiles(profiles)
         result.raw_profiles = db.all_raw_profiles()
 
         # Resolve is what turns profiles into people; skipping it still needs to

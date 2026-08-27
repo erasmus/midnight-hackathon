@@ -107,7 +107,7 @@ def test_stages_receive_and_return_persons(tmp_path):
 def test_running_the_script_writes_an_empty_database(tmp_path):
     proc = subprocess.run(
         [sys.executable, "pipeline.py", "--db", str(tmp_path / "db.sqlite"),
-         "--out", str(tmp_path / "out")],
+         "--out", str(tmp_path / "out"), "--skip-fetch"],
         cwd=REPO_ROOT, capture_output=True, text=True,
     )
     assert proc.returncode == 0, proc.stderr
@@ -117,8 +117,25 @@ def test_running_the_script_writes_an_empty_database(tmp_path):
 def test_the_script_accepts_a_skip_flag(tmp_path):
     proc = subprocess.run(
         [sys.executable, "pipeline.py", "--db", str(tmp_path / "db.sqlite"),
-         "--out", str(tmp_path / "out"), "--skip-enrich"],
+         "--out", str(tmp_path / "out"), "--skip-fetch", "--skip-enrich"],
         cwd=REPO_ROOT, capture_output=True, text=True,
     )
     assert proc.returncode == 0, proc.stderr
     assert "enrich" in proc.stdout + proc.stderr
+
+
+def test_skipping_fetch_runs_no_adapters(tmp_path):
+    adapter = FakeAdapter()
+    run(tmp_path, adapters=[adapter], skip=["fetch"])
+    assert adapter.requested is None
+
+
+def test_skipping_fetch_still_processes_already_persisted_profiles(tmp_path):
+    run(tmp_path, adapters=[FakeAdapter()])
+    result = run(tmp_path, adapters=[FakeAdapter()], skip=["fetch"])
+    assert [p.handle for p in result.raw_profiles] == ["alice"]
+    assert len(result.persons) == 1
+
+
+def test_fetch_is_a_skippable_stage(tmp_path):
+    assert "fetch" in pipeline.SKIPPABLE_STAGES
