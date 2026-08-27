@@ -75,6 +75,7 @@ def run(
     out_dir: str | Path = DEFAULT_OUT_DIR,
     top_n: int = DEFAULT_TOP_N,
     skip: Sequence[str] = (),
+    github_for: int = 0,
 ) -> RunResult:
     unknown = [s for s in skip if s not in SKIPPABLE_STAGES]
     if unknown:
@@ -103,7 +104,12 @@ def run(
 
         # Resolve is what turns profiles into people; skipping it still needs to
         # yield people, otherwise every downstream stage has nothing to chew on.
-        persons = resolve_stage.resolve(result.raw_profiles)
+        if active("resolve"):
+            persons = resolve_stage.resolve(
+                result.raw_profiles, github_for=github_for
+            )
+        else:
+            persons = resolve_stage.passthrough(result.raw_profiles)
 
         if active("enrich"):
             persons = enrich_stage.enrich(persons)
@@ -149,6 +155,16 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--top", type=int, default=DEFAULT_TOP_N, help="profiles to request per adapter"
     )
+    # Off by default: unauthenticated GitHub allows 60 requests/hour, so this
+    # is opt-in rather than something a casual run burns through by accident.
+    parser.add_argument(
+        "--github-for",
+        type=int,
+        default=0,
+        metavar="N",
+        help="check GitHub handle reuse for the top N people "
+        "(0 = off; set GITHUB_TOKEN to raise the 60/hr limit)",
+    )
     for stage in SKIPPABLE_STAGES:
         parser.add_argument(
             f"--skip-{stage}", action="store_true", help=f"skip the {stage} stage"
@@ -165,6 +181,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         out_dir=args.out,
         top_n=args.top,
         skip=skip,
+        github_for=args.github_for,
     )
     return 0
 

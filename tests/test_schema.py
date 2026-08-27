@@ -68,3 +68,13 @@ def test_scores_round_trips_and_supports_required_flags():
 def test_scores_rejects_unknown_flag():
     with pytest.raises(ValueError):
         Scores(person_id="x", flags=["not_a_real_flag"])
+
+
+def test_person_round_trips_weak_matches():
+    person = Person(id="codeforces:tourist", weak_matches=["github.com/tourist, uncorroborated"])
+    assert Person.from_dict(person.to_dict()) == person
+
+
+def test_weak_matches_alone_do_not_require_evidence():
+    person = Person(id="codeforces:tourist", weak_matches=["uncorroborated collision"])
+    assert person.evidence == []

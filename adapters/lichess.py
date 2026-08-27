@@ -79,15 +79,23 @@ def _details(client, handles: list[str]) -> dict[str, dict]:
     return details
 
 
-def _links(profile: dict) -> list[str]:
-    """URLs the player published, from the links field and the bio prose."""
+def _links(profile: dict) -> tuple[list[str], dict[str, str]]:
+    """URLs the player published, plus which field each came from.
+
+    The provenance map feeds the evidence string in core.links (#19), so a
+    judge can be told exactly where a link was found. The links field is
+    checked first, so a URL appearing in both is credited to the more
+    deliberate of the two.
+    """
     found: list[str] = []
-    for field in (profile.get("links"), profile.get("bio")):
-        for url in URL_PATTERN.findall(field or ""):
+    sources: dict[str, str] = {}
+    for field_name, text in (("links field", profile.get("links")), ("bio", profile.get("bio"))):
+        for url in URL_PATTERN.findall(text or ""):
             url = url.rstrip(".,")
-            if url not in found:
+            if url not in sources:
                 found.append(url)
-    return found
+                sources[url] = field_name
+    return found, sources
 
 
 def _display_name(handle: str, profile: dict) -> str:
@@ -142,6 +150,7 @@ def fetch_top(
         handle = player["handle"]
         user = details.get(handle, {})
         profile = user.get("profile") or {}
+        links, link_sources = _links(profile)
         profiles.append(
             RawProfile(
                 platform=name,
@@ -151,10 +160,11 @@ def fetch_top(
                 rating=max(player["ratings"].values(), default=None),
                 rank_pct=None,  # see module docstring
                 rating_history=_rating_history(client, handle) if i < history_for else [],
-                profile_links=_links(profile),
+                profile_links=links,
                 country=profile.get("flag"),
                 raw={
                     "ratings": player["ratings"],
+                    "link_sources": link_sources,
                     "top_rank": player["top_rank"],
                     # Join keys for the FIDE adapter (#15) and join (#21).
                     "title": user.get("title"),

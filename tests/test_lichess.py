@@ -286,3 +286,24 @@ def test_fetched_at_is_stamped_on_every_profile():
 def test_adapter_exposes_the_pipeline_interface():
     assert callable(lichess.fetch_top)
     assert lichess.name == "lichess"
+
+
+def test_link_provenance_records_the_field_each_url_came_from():
+    users = [
+        full_user("Alice", links="https://github.com/alice", bio="also https://alice.dev"),
+        full_user("Bob"), full_user("Carol"),
+    ]
+    profiles = {p.handle: p for p in fetch(client_for(BASIC_TOPS, users))}
+    assert profiles["Alice"].raw["link_sources"] == {
+        "https://github.com/alice": "links field",
+        "https://alice.dev": "bio",
+    }
+
+
+def test_a_url_in_both_bio_and_links_is_credited_to_the_links_field():
+    users = [
+        full_user("Alice", links="https://github.com/alice", bio="https://github.com/alice"),
+        full_user("Bob"), full_user("Carol"),
+    ]
+    profiles = {p.handle: p for p in fetch(client_for(BASIC_TOPS, users))}
+    assert profiles["Alice"].raw["link_sources"] == {"https://github.com/alice": "links field"}
