@@ -78,3 +78,28 @@ def test_person_round_trips_weak_matches():
 def test_weak_matches_alone_do_not_require_evidence():
     person = Person(id="codeforces:tourist", weak_matches=["uncorroborated collision"])
     assert person.evidence == []
+
+
+def test_person_carries_an_enrichment_dict_for_epic_4():
+    person = Person(id="x", enrichment={"github_activity": {"active": True}})
+    assert Person.from_dict(person.to_dict()) == person
+
+
+def test_enrichment_defaults_to_empty():
+    assert Person(id="x").enrichment == {}
+
+
+def test_scores_record_exclusion_auditably():
+    scores = Scores(person_id="x", excluded=True,
+                    exclusion_reasons=["under 18: born 2011"])
+    assert Scores.from_dict(scores.to_dict()) == scores
+
+
+def test_scores_are_not_excluded_by_default():
+    s = Scores(person_id="x")
+    assert s.excluded is False and s.exclusion_reasons == []
+
+
+def test_an_excluded_score_must_say_why():
+    with pytest.raises(ValueError):
+        Scores(person_id="x", excluded=True)

@@ -200,3 +200,33 @@ def test_a_fide_index_passed_to_run_unlocks_birth_years(tmp_path):
 def test_run_does_no_fide_lookup_without_an_index(tmp_path):
     result = run(tmp_path, adapters=[FakeAdapter()])
     assert result.persons[0].birth_year is None
+
+
+def test_scores_are_persisted_with_exclusions(tmp_path):
+    minor = RawProfile(platform="lichess", handle="kid", display_name="A Kid",
+                       birth_year=2015, rank_pct=99.9)
+
+    class One:
+        name = "one"
+
+        def fetch_top(self, n):
+            return [minor]
+
+    result = run(tmp_path, adapters=[One()])
+    assert result.scores and result.scores[0].excluded is True
+    assert result.scores[0].exclusion_reasons
+
+
+def test_exclusions_survive_a_round_trip_through_the_database(tmp_path):
+    minor = RawProfile(platform="lichess", handle="kid", birth_year=2015)
+
+    class One:
+        name = "one"
+
+        def fetch_top(self, n):
+            return [minor]
+
+    run(tmp_path, adapters=[One()])
+    from core.db import Database
+    (stored,) = Database(tmp_path / "db.sqlite").all_scores()
+    assert stored.excluded is True and stored.exclusion_reasons

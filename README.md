@@ -25,7 +25,9 @@ python -m pytest                      # tests (network-free)
 | `core/github_match.py` | handle reuse, accepted only with a corroborating signal |
 | `core/fide_join.py` | title + name join against the official FIDE list |
 | `core/resolve.py` | the merge rule: three sanctioned mechanisms, one `_union` |
-| `core/{normalize,enrich,score,outputs}.py`, `dossier.py` | stage stubs, filled in by Epics 4–6 |
+| `core/score.py` | hard filters, three sub-scores, composite, ranking |
+| `docs/normalization.md` | **the mapping table** — every scoring constant, and which numbers are exact vs estimated |
+| `core/{normalize,enrich,outputs}.py`, `dossier.py` | stage stubs, filled in by Epics 4 and 6 |
 
 ## Adding an adapter
 
@@ -57,3 +59,20 @@ titled players sharing a name — are refused outright rather than guessed.
 
 Everyone else has no verified age, which Epic 5 must flag as `age_unknown`
 rather than assume.
+
+## Scoring
+
+```
+composite = 0.45 × outlierness + 0.30 × trajectory + 0.25 × addressability
+```
+
+Hard filters run first: under-18 excluded; unknown age on a young-skewing
+platform excluded unless there is independent adulthood evidence; known
+founders excluded; single-source-with-no-professional-surface excluded.
+
+**Excluded people are persisted with their reasons, never deleted** — the
+shortlist has to be auditable, including what it refused.
+
+See [docs/normalization.md](docs/normalization.md) for every constant and,
+importantly, which percentiles are exact (Codeforces only) and which are
+estimates (everything else).

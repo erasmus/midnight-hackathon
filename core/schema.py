@@ -76,6 +76,10 @@ class Person:
     # can say honestly how many we refused; never surfaced in outputs, and
     # deliberately NOT evidence -- these are the links we chose not to make.
     weak_matches: list[str] = field(default_factory=list)
+    # Where Epic 4 (enrichment) writes what it learns: GitHub activity,
+    # founder detection, and anything else derived rather than fetched.
+    # Kept separate from `profiles` so enrichment never mutates raw source data.
+    enrichment: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.links and not self.evidence:
@@ -106,12 +110,21 @@ class Scores:
     addressability: float | None = None
     composite: float | None = None
     flags: list[str] = field(default_factory=list)
+    # Hard-filter outcome. Excluded people are persisted, never deleted: the
+    # shortlist has to be auditable, including what we refused and why.
+    excluded: bool = False
+    exclusion_reasons: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         unknown = [f for f in self.flags if f not in KNOWN_FLAGS]
         if unknown:
             raise ValueError(
                 f"Unknown score flags {unknown}; known flags are {sorted(KNOWN_FLAGS)}."
+            )
+        if self.excluded and not self.exclusion_reasons:
+            raise ValueError(
+                f"Scores for {self.person_id!r} are excluded but give no reason; "
+                "every exclusion must be explainable."
             )
 
     def to_dict(self) -> dict[str, Any]:
