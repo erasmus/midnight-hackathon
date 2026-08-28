@@ -30,6 +30,7 @@ python -m pytest                      # tests (network-free)
 | `core/outputs.py` | `shortlist.csv` (top 20, survivors only) |
 | `core/sparkline.py` | inline-SVG rating sparkline, no dependencies |
 | `dossier.py` | self-contained HTML one-pager per shortlisted candidate |
+| `app.py` | local scoring explorer (GUI), stdlib only |
 | `core/{normalize,enrich}.py` | stage stubs, filled in by Epic 4 |
 
 ## Adding an adapter
@@ -100,3 +101,22 @@ Dossiers are written for shortlist survivors only. The outreach angle is
 labelled `DRAFT — edit before sending`, and there is no send or automation
 capability anywhere in this codebase — by design. The system ranks and
 explains; a person decides and writes.
+
+## GUI — the scoring explorer
+
+```bash
+python app.py            # http://127.0.0.1:8000
+```
+
+Stdlib only (`http.server` + `sqlite3`) — no `pip install`, nothing to fail on
+someone else's laptop. Binds loopback only: this holds real people's data and
+must not be reachable from conference wifi.
+
+Drag the weight sliders or change a hard filter and the ranking re-computes
+live; the header counts (*scored / pass / refused*) move with it. Click any row
+to open that person's dossier beside the table. The **Refused** tab shows every
+excluded person with the reason in plain language.
+
+**It does not reimplement scoring.** The sliders build a `ScoringConfig` that is
+passed to the same `core.score` functions the pipeline uses, so what is on
+screen is provably the code path that wrote `shortlist.csv`.
